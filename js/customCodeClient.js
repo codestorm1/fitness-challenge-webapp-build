@@ -1,3 +1,4 @@
+// uncompressed
 define("customCodeClient", ["jquery"], function($) {
     // private methods
     var that = this;
