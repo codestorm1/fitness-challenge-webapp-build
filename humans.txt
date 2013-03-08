@@ -3,7 +3,6 @@
 
 # TEAM
 
-
     <name> -- <role> -- <twitter>
 
 # THANKS
