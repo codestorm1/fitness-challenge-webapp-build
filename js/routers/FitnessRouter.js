@@ -1,7 +1,9 @@
 define("routers/FitnessRouter", [ "jquery", "backbone", "fitness", "customCodeClient", "models/ChallengeModel",
-    "views/FooterView", "views/HomeView", "views/FriendsView", "views/LoginView", "views/RegisterView", "views/ProfileView", "views/AuthView", "views/ChallengeView", "views/ChallengeListView", "jquerymobile" ],
+    "views/FooterView", "views/HomeView", "views/FriendsView", "views/LoginView", "views/RegisterView", "views/ProfileView", "views/AuthView",
+    "views/ChallengeView", "views/ChallengeListView", "views/InvitationView", "views/InvitationListView", "jquerymobile" ],
     function( $, Backbone, fitness, customCode, ChallengeModel,
-              FooterView, HomeView, FriendsView, LoginView, RegisterView, ProfileView, AuthView, ChallengeView, ChallengeListView, $__jqm ) {
+              FooterView, HomeView, FriendsView, LoginView, RegisterView, ProfileView, AuthView,
+              ChallengeView, ChallengeListView, InvitationView, InvitationListView, $__jqm ) {
 
        // "use strict";
     // Extends Backbone.Router
@@ -13,7 +15,7 @@ define("routers/FitnessRouter", [ "jquery", "backbone", "fitness", "customCodeCl
 
 //            $('#header').html(new HeaderView().render().el);
 
-            var that = this;
+//            this.invitationViews = [];
             this.loginView = new LoginView( { el: "#login" } );
             this.registerView = new RegisterView( { el: "#register"} );
 
@@ -28,6 +30,8 @@ define("routers/FitnessRouter", [ "jquery", "backbone", "fitness", "customCodeCl
             "home": "showHome",
             "login" : "showLogin",
             "challenge_list" : "showChallengeList",
+            "invitation_list" : "showInvitationList",
+            "invitation/:invitation_id" : "showInvitation",
             "create" : "showCreate",
             "profile" : "showProfile",
             "friends" : "showFriends",
@@ -151,6 +155,60 @@ define("routers/FitnessRouter", [ "jquery", "backbone", "fitness", "customCodeCl
             });
         },
 
+        showInvitationList: function() {
+            var that = this;
+            var pageSelector = '#invitation_list';
+            var footerSelector = pageSelector + ' .footer';
+            function changePage() {
+                $.mobile.changePage(pageSelector, {reverse: false, changeHash: true});
+                $.mobile.showPageLoadingMsg();
+            }
+
+            this.ensureLogin(function(success) {
+                if (!that.invitationsView) {
+                    fitness.getInvitations(fitness.user.get('username'), false, function(success, data) {
+                        if (!success) {
+                            fitness.showMessage('Failed to load invitations');
+                            return;
+                        }
+                        that.invitationsView = new InvitationListView({el: pageSelector, model: data});
+                        var footerView = new FooterView({el: footerSelector});
+                        changePage();
+                    });
+                }
+                else {
+                    changePage();
+                }
+            });
+        },
+
+        showInvitation: function(invitationID) {
+            var that = this;
+            var pageSelector = '#invitation';
+            var footerSelector = pageSelector + ' .footer';
+            this.ensureLogin(function(success) {
+                var changePage = function() {
+                    $.mobile.changePage(pageSelector, {reverse: false, changeHash: true});
+                    $.mobile.showPageLoadingMsg();
+                };
+                if (!that.invitationView) {
+                    fitness.getInvitations(fitness.user.get('username'), true, function(success) {
+                        if (!success) {
+                            fitness.showMessage('Failed to load invitations');
+                            return;
+                        }
+                        that.invitationView = new InvitationView({el: "#invitation", model: fitness.invitationLookup[invitationID]});
+                        var footerView = new FooterView({el: footerSelector});
+                        changePage();
+                    });
+                }
+                else {
+                    changePage();
+                }
+            });
+        },
+
+
         showProfile: function() {
             var that = this;
             this.ensureLogin(function(success) {
@@ -214,15 +272,19 @@ define("routers/FitnessRouter", [ "jquery", "backbone", "fitness", "customCodeCl
                     that.showLogin();
                     return;
                 }
-                fitness.updateIfStale(fitness.user.get('username'), function(success, data) {
 
-                    if (!that.friendsView) {
-                        that.friendsView = new FriendsView( { el: "#friends" } );
-                        var footerView = new FooterView( { el: "#friends .footer" } );
-                    }
-                    $.mobile.changePage( "#friends" , { reverse: false, changeHash: true } );
-                    $.mobile.showPageLoadingMsg();
-                });
+                if (!that.friendsView) {
+                    fitness.updateFitbitFriends(fitness.user.get('username'), function(success, data) {
+                        if (success) {
+                            that.friendsView = new FriendsView( { el: "#friends" } );
+                            var footerView = new FooterView( { el: "#friends .footer" } );
+                            $.mobile.changePage( "#friends" , { reverse: false, changeHash: true } );
+                            $.mobile.showPageLoadingMsg();
+                        }
+                    });
+                }
+                $.mobile.changePage( "#friends" , { reverse: false, changeHash: true } );
+                $.mobile.showPageLoadingMsg();
             });
         }
 

@@ -60,22 +60,22 @@ define("views/ChallengeView", [ "jquery", "backbone", "mustache", "fitness", "mo
                         for (var i = 0; i < len; i++) {
                             var friendID = friendIDs[i];
                             var invitation = new Invitation({
-                                "challenge" : challengeID,
+                                "challenge" : challenge_id,
                                 "challengeinviter" : fitness.user.get('username'),
                                 "inviteduser" : friendID,
                                 "responded" : false,
                                 "accepted" : false});
                             invitation.create({
                                 success: function(model) {
-                                    fitness.showMessage("invitation to " + friendID + " saved");
+                                    fitness.showMessage("invitation to " + model.get('inviteduser') + " saved");
                                 },
-                                error: function(model) {
-                                    fitness.showMessage("invitation to " + friendID + " failed");
+                                error: function(model, more) {
+                                    fitness.showMessage("invitation to " + model.get('inviteduser') + " failed " + more || '');
                                 }
                             });
                         }
                     }
-                    fitness.showMessage('Challenege created!');
+                    fitness.showMessage('Challenge created!');
                 },
                 error: function(model, response) {
                     $.mobile.loading("hide");
