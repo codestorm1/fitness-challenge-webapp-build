@@ -29,7 +29,7 @@
     <!--<script src="js/models/InviteModel.js"></script>-->
     <!--<script src="js/models/UserModel.js"></script>-->
     <!--<script src="js/views/AuthView.js"></script>-->
-    <!--<script src="js/views/ChallengeView.js"></script>-->
+    <!--<script src="js/views/CreateChallengeView.js"></script>-->
     <!--<script src="js/views/FooterView.js"></script>-->
     <!--<script src="js/views/FriendsView.js"></script>-->
     <!--<script src="js/views/HomeView.js"></script>-->
@@ -48,10 +48,10 @@
 <body>
 
 <script id="header_template" type="text/template">
-    <header data-role="header" data-theme="j" class="ui-header ui-bar-j">
-        <a href='#' class='ui-btn-left back_button' data-icon='arrow-l' data-theme="b" data-ajax="false">Back</a>
+    <header data-role="header" data-theme="j" class="ui-header ui-bar-j" data-add-back-btn="true">
+        <!--<a href='#' class='ui-btn-left back_button' data-icon='arrow-l' data-theme="b" data-ajax="false">Back</a>-->
         <h1 class="ir logo">Fitness Challenge</h1>
-        <a href="#home" data-icon="home" data-role="button" data-theme="b" class="home_button" data-direction="reverse" data-ajax="false">Home</a>
+        <a href="#home" data-icon="home" data-role="button" class="ui-btn-right" data-theme="b" class="home_button" data-direction="reverse" data-ajax="false">Home</a>
     </header>
 </script>
 
@@ -64,28 +64,28 @@
 <div id="home" data-role="page" data-title="Fitness Challenge">
 </div>
 
-<div id="login" data-role="page" data-title="Fitness Challenge - Login">
+<div id="login" data-role="page" data-title="Fitness Challenge - Login" data-add-back-btn="true">
 </div>
 
-<div id="profile" data-role="page" data-title="Your Profile">
+<div id="profile" data-role="page" data-title="Your Profile" data-add-back-btn="true">
 </div>
 
-<div id="challenge_list" data-role="page" data-title="Challenges">
+<div id="challenge_list" data-role="page" data-title="Challenges" data-add-back-btn="true">
 </div>
 
-<div id="challenge_detail" data-role="page" data-title="Challenge Detail">
+<div id="challenge" data-role="page" data-title="Challenge Detail" data-add-back-btn="true">
 </div>
 
-<div id="invitation_list" data-role="page" data-title="Invitations">
+<div id="invitation_list" data-role="page" data-title="Invitations" data-add-back-btn="true">
 </div>
 
-<div id="invitation" data-role="page" data-title="Invitation">
+<div id="invitation" data-role="page" data-title="Invitation" data-add-back-btn="true">
 </div>
 
-<div id="create" data-role="page" data-title="Create Challenge">
+<div id="create" data-role="page" data-title="Create Challenge" data-add-back-btn="true">
 </div>
 
-<div id="friends" data-role="page" data-title="Your Friends">
+<div id="friends" data-role="page" data-title="Your Friends" data-add-back-btn="true">
 </div>
 
 <div id="auth" data-role="page" data-title="Authorize with Fitbit">
@@ -103,7 +103,7 @@
         <!--<h1 class="ir logo ui-title">Fitness Challenge</h1>-->
     <!--</header>-->
     <div data-role="content">
-        <ul data-role="listview" data-inset="true" class="home_links" data-checknew="true">
+        <ul data-role="listview" data-inset="true">
             <li class="profile">
                 <a href="#profile">My Profile</a>
             </li>
@@ -157,19 +157,40 @@
     <div data-role="content">
         <h2>Your active challenges</h2>
         <ul data-role="listview" data-inset="true">
-        {{#challenges}}
+            {{#challenges}}
             <li>
-                <a>
+                <a href="#challenge/{{ challengeID }}">
                     <span>{{ description }}</span>
                     <span class="ui-li-count">{{ count }}</span>
                 </a>
             </li>
-        {{/challenges}}
-        {{^challenges}}
-        <li>
-            <h3>You are not competing in any challenges</h3>
-        </li>
-        {{/challenges}}
+            {{/challenges}}
+            {{^challenges}}
+            <li>
+                <h3>You are not competing in any challenges</h3>
+            </li>
+            {{/challenges}}
+        </ul>
+    </div>
+    <div class="footer"></div>
+</script>
+
+<script id="challenge_template" type="text/template">
+    <div data-role="content">
+        <h2>Your Challenge</h2>
+        <h2>{{description}}</h2>
+        <ul data-role="listview" data-inset="true">
+            {{#users}}
+            <li>
+                <img src="{{ avatar }}" class="friend_avatar">
+                <h3>{{ displayname }}</h3>
+            </li>
+            {{/users}}
+            {{^users}}
+            <li>
+                <h3>That's odd, there are no participants in this challenge</h3>
+            </li>
+            {{/users}}
         </ul>
     </div>
     <div class="footer"></div>

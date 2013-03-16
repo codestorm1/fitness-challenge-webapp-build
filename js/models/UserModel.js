@@ -1,1 +1,0 @@
-define(["jquery","underscore","stackmob","stackmobInit"],function(e,t,n,r){var i=n.Model.extend({schemaName:"user"});return i});
