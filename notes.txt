@@ -13,3 +13,10 @@ update activities
 cron job?
 accept/decline - error?
 
+auto update collections when changed:
+invitations
+challenges
+
+add back button
+
+use stackmob login system
