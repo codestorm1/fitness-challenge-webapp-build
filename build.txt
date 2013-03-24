@@ -25,6 +25,5 @@ css/normalize.css
 
 ../temp-build/js/main.js
 ----------------
-js/libs/underscore-1.4.1-min.js
 js/libs/mustache.js
 ../temp-build/js/main.js
